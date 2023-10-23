@@ -1,34 +1,89 @@
 class Coffee:
     def __init__(self, name):
         self.name = name
+    
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, name):
+        if not hasattr(self,"_name"):
+            if isinstance(name, str) and len(name) >= 3:
+                self._name = name
+            else:
+                pass
+    
         
     def orders(self):
-        pass
+        return [order for order in Order.all if order.coffee is self]
     
     def customers(self):
-        pass
+        all_order = set([order.customer for order in self.orders()])
+        return list(all_order)
     
     def num_orders(self):
-        pass
+        return len(self.orders()) 
     
     def average_price(self):
-        pass
+        return sum([order.price for order in self.orders()])/self.num_orders() if self.num_orders() > 0 else 0
+
 
 class Customer:
     def __init__(self, name):
         self.name = name
         
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, name):
+        if isinstance(name, str) and len(name) in range(1,15):
+            self._name = name
+        else:
+            pass
+
     def orders(self):
-        pass
+        return [order for order in Order.all if order.customer is self]
     
     def coffees(self):
-        pass
+        all_coffees = set([order.coffee for order in self.orders()])
+        return list(all_coffees)
     
     def create_order(self, coffee, price):
-        pass
+        return Order(self, coffee, price)
     
 class Order:
+    all = []
     def __init__(self, customer, coffee, price):
         self.customer = customer
         self.coffee = coffee
         self.price = price
+        Order.all.append(self)
+
+    @property
+    def price(self):
+        return self._price
+    
+    @price.setter
+    def price(self, price):
+        if not hasattr(self, "_price"):
+            if isinstance(price, float) and (1.0 <= price <= 10.0):
+                self._price = price
+            else:
+                pass
+
+    @property
+    def customer(self):
+        return self._customer
+    @customer.setter
+    def customer(self, customer):
+        if isinstance(customer, Customer):
+            self._customer = customer
+    
+    @property
+    def coffee(self):
+        return self._coffee
+    @coffee.setter
+    def coffee(self, coffee):
+        if isinstance(coffee, Coffee):
+            self._coffee = coffee
