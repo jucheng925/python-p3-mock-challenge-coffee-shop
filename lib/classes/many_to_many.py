@@ -11,8 +11,9 @@ class Coffee:
             if isinstance(name, str) and len(name) >= 3:
                 self._name = name
             else:
-                pass
-    
+                raise Exception("Coffee name needs to be a string with more than three letters")
+        else:
+            raise Exception("Can not change the coffee name.")
         
     def orders(self):
         return [order for order in Order.all if order.coffee is self]
@@ -42,7 +43,7 @@ class Customer:
         if isinstance(name, str) and len(name) in range(1,15):
             self._name = name
         else:
-            pass
+            raise Exception("Customer name needs to be a string with a length btw 1 to 15 chars")
 
     def orders(self):
         return [order for order in Order.all if order.customer is self]
@@ -55,10 +56,7 @@ class Customer:
         return Order(self, coffee, price)
     
     def amount_spent(self, coffee):
-        try:
-            return sum([order.price for order in Order.all if order.coffee is coffee and order.customer is self])
-        except:
-            pass
+        return sum([order.price for order in Order.all if order.coffee is coffee and order.customer is self])
     
     @classmethod
     def most_aficionado(cls, coffee):
@@ -74,7 +72,7 @@ class Order:
     def __init__(self, customer, coffee, price):
         self.customer = customer
         self.coffee = coffee
-        self.price = float(price)
+        self.price = price
         Order.all.append(self)
 
     @property
@@ -83,10 +81,12 @@ class Order:
     @price.setter
     def price(self, price):
         if not hasattr(self, "_price"):
-            if isinstance(price, float) and (1.0 <= price <= 10.0):
+            if isinstance(price, (int, float)) and (1.0 <= price <= 10.0):
                 self._price = price
             else:
-                pass
+                raise Exception("Price needs to be a float btw 1.0 and 10.0")
+        else:
+            raise Exception("Can not change the price.")
 
     @property
     def customer(self):
@@ -95,6 +95,8 @@ class Order:
     def customer(self, customer):
         if isinstance(customer, Customer):
             self._customer = customer
+        else:
+            raise Exception("customer need to be an instance of Customer")
     
     @property
     def coffee(self):
@@ -103,3 +105,5 @@ class Order:
     def coffee(self, coffee):
         if isinstance(coffee, Coffee):
             self._coffee = coffee
+        else:
+            raise Exception("coffee needs to be an instance of Coffee.")
