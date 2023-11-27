@@ -64,7 +64,8 @@ class Customer:
             return None
         else:
             coffee_dict = {customer: customer.amount_spent(coffee) for customer in cls.all}
-            coffee_max = max(coffee_dict, key=lambda x:coffee_dict[x])
+            # coffee_max = max(coffee_dict, key=lambda x:coffee_dict[x]) --another way to write it
+            coffee_max = max(coffee_dict, key = coffee_dict.get)
             return coffee_max
     
 class Order:
